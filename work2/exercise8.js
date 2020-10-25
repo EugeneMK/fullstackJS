@@ -6,13 +6,16 @@ const human = Object.create({}, {
         writable: true
     },
     dateOfBirth: {
-        set: function (value) {
-            this.age = new Date().getYear() - new Date(value).getYear()
+        set: function (birthDate) {
+            this.age = new Date().getYear() - new Date(birthDate).getYear()
         }
     },
     fullName: {
         get: function () {
             return (this.firstName + ' ' + this.lastName);
+        },
+        set: function (name) {
+            [this.firstName, this.lastName] = name.split(' ')
         }
     },
 });
