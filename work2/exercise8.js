@@ -7,7 +7,7 @@ const human = Object.create({}, {
     },
     dateOfBirth: {
         set: function (birthDate) {
-            this.age = new Date().getYear() - new Date(birthDate).getYear()
+            this.age = new Date().getYear() - new Date(birthDate).getYear();
         }
     },
     fullName: {
@@ -15,7 +15,7 @@ const human = Object.create({}, {
             return (this.firstName + ' ' + this.lastName);
         },
         set: function (name) {
-            [this.firstName, this.lastName] = name.split(' ')
+            [this.firstName, this.lastName] = name.split(' ');
         }
     },
 });
