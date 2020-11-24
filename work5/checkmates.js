@@ -1,9 +1,6 @@
-const board = [ [], [], [], [], [], [], [], [] ];
-
 class Piece {
-    constructor (board, color, x, y) {
+    constructor (color) {
         this.color = color;
-        board[x][y] = this;
     }
 
     getMoves (board, x, y) {
@@ -99,11 +96,11 @@ class Pawn extends Piece {
         const rightAttackedPiece = board[x + 1][y + i];
 
         if (leftAttackedPiece && leftAttackedPiece.color != this.color) {
-            moves.push([x + 1, y + i]);
+            moves.push([x - 1, y + i]);
         }
 
         if (rightAttackedPiece && rightAttackedPiece.color != this.color) {
-            moves.push([x - 1, y + i]);
+            moves.push([x + 1, y + i]);
         }
 
         return moves;
@@ -111,7 +108,9 @@ class Pawn extends Piece {
 }
 
 class Game {
-    constructor () {
+    constructor (board, pieces) {
+        this.board = board;
+        this.pieces = pieces;
         this.gameState = 'Game continues';
         this.activeSide = 'white';
         this.activeSquare = null;
@@ -120,9 +119,10 @@ class Game {
     }
 
     choosePiece (x, y) {
-        if (board[x][y].color == this.activeSide) {
+        const piece = this.board[x][y];
+        if (piece.color == this.activeSide) {
             this.activeSquare = [x, y];
-            this.activePiece = board[x][y];
+            this.activePiece = piece;
             return this.activePiece;
         }
     }
@@ -133,7 +133,7 @@ class Game {
     }
 
     getPossibleMoves () {
-        return this.activePiece.getMoves(board, ...this.activeSquare);      
+        return this.activePiece.getMoves(this.board, ...this.activeSquare);      
     }
 
     makeMove (x1, y1) {
@@ -146,11 +146,11 @@ class Game {
             piece: this.activePiece.type,
             startSquare: this.activeSquare,
             endSquare: [x1, y1],
-            capturedPiece: board[x1][y1] ? board[x1][y1] : null
+            capturedPiece: this.board[x1][y1] ? this.board[x1][y1] : null
         });
         const [x0, y0] = this.activeSquare;
-        board[x0][y0] = null;
-        board[x1][y1] = this.activePiece;
+        this.board[x0][y0] = null;
+        this.board[x1][y1] = this.activePiece;
         this.activeSquare = null;
         this.activePiece = null;
         this.activeSide = this.activeSide == 'white' ? 'black' : 'white';
@@ -158,37 +158,51 @@ class Game {
 
     makePromotion (newPiece) {
         if (this.activePiece.canMakePromotion) {
-            if ((this.activeSide == 'white' && this.activeSquare[1] == 7) ||
-            (this.activeSide == 'black' && this.activeSquare[1] == 0)) {
-                const [x, y] = this.activeSquare;
-                switch(newPiece) {
-                    case 'queen':
-                        new Queen(board, this.activeSide, x, y);
-                        break;
-                    case 'bishop':
-                        new Bishop(board, this.activeSide, x, y);
-                        break;
-                    case 'knight':
-                        new Knight(board, this.activeSide, x, y);
-                        break;
-                    case 'rook':
-                        new Rook(board, this.activeSide, x, y);
-                        break;
-                }
-                this.makeMove(x, y);
+            if ((this.activeSide == 'white' && this.activeSquare[1] == 7) || 
+                (this.activeSide == 'black' && this.activeSquare[1] == 0)) {
+                    const [x, y] = this.activeSquare;
+                    this.board[x][y] = this.pieces
+                        .find(piece => piece.color = this.activePiece && piece.type == newPiece);
+                    this.makeMove(x, y);
             }
         }
     }
 }
 
-const whiteRook = new Rook(board, 'white', 0, 0);
-const blackPawn = new Pawn(board, 'black', 2, 6);
-const game = new Game();
+const whitePawn = new Pawn('white');
+const whiteRook = new Rook('white');
+const whiteKnight = new Knight('white');
+const whiteBishop = new Bishop('white');
+const whiteQueen = new Queen('white');
+const whiteKing = new King('white');
 
-game.choosePiece(0, 0);
-game.makeMove(2, 0);
-game.choosePiece(2, 6);
-game.makeMove(2, 4);
-game.choosePiece(2, 0);
-game.makeMove(2, 4);
+const blackPawn = new Pawn('black');
+const blackRook = new Rook('black');
+const blackKnight = new Knight('black');
+const blackBishop = new Bishop('black');
+const blackQueen = new Queen('black');
+const blackKing = new King('black');
+
+const pieces = [whitePawn, whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing,
+    blackPawn, blackRook, blackKnight, blackBishop, blackQueen, blackKing];
+
+const board = [
+    [whiteRook, whitePawn, null, null, null, null, blackPawn, blackRook],
+    [whiteKnight, whitePawn, null, null, null, null, blackPawn, blackKnight],
+    [whiteBishop, whitePawn, null, null, null, null, blackPawn, blackBishop],
+    [whiteQueen, whitePawn, null, null, null, null, blackPawn, blackQueen],
+    [whiteKing, whitePawn, null, null, null, null, blackPawn, blackKing],
+    [whiteBishop, whitePawn, null, null, null, null, blackPawn, blackBishop],
+    [whiteKnight, whitePawn, null, null, null, null, blackPawn, blackKnight],
+    [whiteRook, whitePawn, null, null, null, null, blackPawn, blackRook],
+];
+
+const game = new Game(board, pieces);
+
+game.choosePiece(4, 1); //белая пешка Е2
+game.makeMove(4, 3);    //белая пешка ходит Е2-Е4
+game.choosePiece(3, 6); //чёрная пешка D7
+game.makeMove(3, 4);    //чёрная пешка ходит D7-D5
+game.choosePiece(4, 3); //белая пешка E4
+game.makeMove(3, 4);    //белая пешка рубит чёрную на D5
 console.log(game.movesHistory);
