@@ -8,10 +8,17 @@ const listToHtml = (list) => {
 			ul.append(li);
 		}
 		if (Array.isArray(element)) {
-			ul.append(listToHtml(element));
+			const nestedUl = listToHtml(element);
+			if (ul.children.length > 0) {
+				ul.lastElementChild.append(nestedUl);
+			} else {
+				const li = document.createElement('li');
+				ul.append(li);
+				li.append(nestedUl);
+			}
 		}
 	});
-	
+	document.body.append(ul);
 	return ul;
 };
 
