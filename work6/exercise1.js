@@ -21,6 +21,7 @@ h1.dataset.field = 'header';
 p.dataset.field = 'text';
 div.append(h1);
 div.append(p);
+document.append(div);
 
 const dataObj = {
     header: 'Some header',
