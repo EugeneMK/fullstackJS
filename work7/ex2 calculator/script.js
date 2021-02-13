@@ -12,11 +12,14 @@ operations.set('-', (a, b) => a - b);
 operations.set('*', (a, b) => a * b);
 operations.set('/', (a, b) => a / b);
 
+const StrigToFunction = (str) => (new Function(`return (a, b) =>${str}`))();
+
 const clickListener = event => performInput(event.target.textContent);
 const keyboardListener = event => performInput(event.key);
 
 
 const performInput = (keyValue) => {
+    console.log(keyValue);
 
     if (Number.isInteger(+keyValue) | keyValue === '.') {
         currentOperand =
@@ -42,9 +45,9 @@ const performInput = (keyValue) => {
     if (keyValue === '=' | keyValue === 'Enter') {
         const result = operations.get(currentOperation)(+previousOperand, +currentOperand);
         display.textContent = result;
-        currentOperand = 0;
+        currentOperand = result;
         previousOperand = 0;
-        currentOperation = null;
+
         return;
     }
 
@@ -77,8 +80,8 @@ addBtnForm.onsubmit = (event) => {
     event.preventDefault();
 
     const newBtnSymbol = addBtnForm.symbol.value;
-    const newBtnFunc = addBtnForm.func.value;
-    operations.set(newBtnSymbol, (new Function(`return (a, b) => ${newBtnFunc}`))());
+    const newBtnExpression = addBtnForm.expression.value;
+    operations.set(newBtnSymbol, StrigToFunction(newBtnExpression));
 
     const newButton = document.createElement('button');
     newButton.textContent = newBtnSymbol;
