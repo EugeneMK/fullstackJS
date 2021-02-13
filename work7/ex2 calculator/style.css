@@ -1,0 +1,62 @@
+.calculator {
+    font-size: 20px;
+    width: 216px;
+    margin: 50px auto;
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.display {
+    height: 30px;
+    line-height: 30px;
+    margin-bottom: 10px;
+    padding: 5px;
+    border: 2px solid gray;
+    border-radius: 5px;
+    text-align: end;
+}
+
+.main_buttons {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.add_buttons {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 5px;
+}
+
+button {
+    width: 50px;
+    height: 50px;
+    margin: 2px;
+    padding: 0;
+    font-size: 16px;
+}
+
+.add_buttons button {
+    height: 25px;
+    font-size: 12px;
+}
+
+.equal_btn {
+    width: 104px;
+}
+
+form {
+    display: none;
+    font-size: 14px;
+    width: 216px;
+    margin: 50px auto;
+    padding: 10px;
+    border: 2px solid grey;
+    border-radius: 10px;
+
+}
+
+.textinput {
+    display: block;
+    margin-bottom: 10px;
+}
